@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Categorías</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Categorías</h1>
+        
+        <div style="margin-bottom: 20px;">
+            <a href="{% url 'crear_categoria' %}" class="btn btn-success">+ Registrar categoría</a>
+            <a href="{% url 'lista_productos' %}" class="btn btn-secondary">Volver a Productos</a>
+        </div>
+
+        {% if categorias %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for categoria in categorias %}
+                    <tr>
+                        <td>{{ categoria.nombre }}</td>
+                        <td>{{ categoria.observaciones|default:"Sin observaciones" }}</td>
+                        <td class="actions">
+                            <a href="{% url 'editar_categoria' categoria.pk %}" class="btn btn-warning">Editar</a>
+                            <a href="{% url 'eliminar_categoria' categoria.pk %}" 
+                               class="btn btn-danger" 
+                               onclick="return confirm('¿Estás seguro de eliminar esta categoría?');">
+                               Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay categorías registradas.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

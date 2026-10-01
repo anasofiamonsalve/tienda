@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
-from .models import Producto
-from .forms import ProductoForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Producto, Categoria
+from .forms import ProductoForm, CategoriaForm
 
 def lista_productos(request):
     productos = Producto.objects.all()
@@ -15,3 +15,54 @@ def crear_producto(request):
     else:
         form = ProductoForm()
     return render(request, 'crear_producto.html', {'form': form})
+
+def detalle_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    return render(request, 'detalle_producto.html', {'producto': producto})
+
+
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, instance=producto)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_productos')
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'crear_producto.html', {'form': form, 'titulo': 'Editar Producto'})
+
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    producto.delete()
+    return redirect('lista_productos')
+
+def lista_categorias(request):
+    categorias = Categoria.objects.all()
+    return render(request, 'lista_categorias.html', {'categorias': categorias})
+
+def crear_categoria(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm()
+    return render(request, 'crear_categoria.html', {'form': form, 'titulo': 'Registrar Categoría'})
+
+def editar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm(instance=categoria)
+    return render(request, 'crear_categoria.html', {'form': form, 'titulo': 'Editar Categoría'})
+
+def eliminar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    categoria.delete()
+    return redirect('lista_categorias')
